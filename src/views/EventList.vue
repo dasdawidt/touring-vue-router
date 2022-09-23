@@ -3,8 +3,6 @@
     <div class="events">
         <EventCard v-for="event in events" :key="event.id" :event="event" />
 
-        <p>page: {{ page }}</p>
-
         <div class="pagination">
             <router-link
                 id="page-prev"
