@@ -4,7 +4,8 @@ import EventLayout from '../views/event/Layout.vue'
 import EventDetails from '../views/event/Details.vue'
 import EventRegister from '../views/event/Register.vue'
 import EventEdit from '../views/event/Edit.vue'
-import About from '../views/About.vue'
+// Lazy loading
+const About = () => import(/* webpackChunkName: "about" */ '../views/About.vue')
 import NotFound from '../views/NotFound.vue'
 import NetworkError from '../views/NetworkError.vue'
 import NProgress from 'nprogress'
@@ -55,6 +56,7 @@ const routes = [
                 path: 'edit',
                 name: 'EventEdit',
                 component: EventEdit,
+                meta: { requireAuth: true },
             },
         ],
     },
@@ -90,12 +92,34 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition
+        } else {
+            return { top: 0 }
+        }
+    },
 })
 
 // Global guards
 
-router.beforeEach(() => {
+router.beforeEach((to, from) => {
     NProgress.start()
+    let notAuthorized = true
+
+    if (to.meta.requireAuth && notAuthorized) {
+        GStore.flashMessage = 'Sorry, you are not allowed to view this page'
+
+        setTimeout(() => {
+            GStore.flashMessage = ''
+        }, 3000)
+
+        if (from.href) {
+            return false
+        } else {
+            return { name: 'EventList' }
+        }
+    }
 })
 
 router.afterEach(() => {
