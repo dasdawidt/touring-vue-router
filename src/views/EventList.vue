@@ -3,12 +3,14 @@
     <div class="events">
         <EventCard v-for="event in events" :key="event.id" :event="event" />
 
+        <p>page: {{ page }}</p>
+
         <div class="pagination">
             <router-link
                 id="page-prev"
                 :to="{ name: 'EventList', query: { page: page - 1 } }"
                 rel="prev"
-                v-if="page != 1"
+                v-if="page > 1"
                 >&#60; Previous</router-link
             >
 
