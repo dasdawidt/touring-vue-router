@@ -37,6 +37,12 @@ const routes = [
         ],
     },
     {
+        path: '/events:everythingElse(.*)',
+        redirect: (to) => {
+            return { path: '/event' + to.params.everythingElse }
+        },
+    },
+    {
         path: '/about',
         name: 'About',
         component: About,
